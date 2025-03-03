@@ -1,0 +1,38 @@
+services:
+  api_gateway:
+    # The :watch image restarts the service automatically when the configuration files change.
+    # Do not use this image in production, it's meant to speed up your testing and development.
+    image: devopsfaith/krakend:watch
+    volumes:
+      - ./config/krakend:/etc/krakend
+    ports:
+      # - "1234:1234"
+      - "8080:8080"
+      # - "8090:8090"
+    command: ["run", "-d", "-c", "/etc/krakend/krakend.json"]
+    depends_on:
+      - fake_api
+
+  fake_api:
+    image: busybox:latest
+    volumes:
+      - ./data:/var/www/
+    ports:
+      - "8000:80"
+    command: httpd -f -h /var/www/
+  reverse_proxy:
+    image: ubuntu # Using the Debian-based Apache image
+    container_name: apache_reverse_proxy03
+    ports:
+      - "5005:80" # Exposing Apache on localhost:5005
+      - "90:90"
+    volumes:
+      - ./reverse-proxy/entrypoint.sh:/entrypoint.sh
+      - ./reverse-proxy/000-default.conf:/000-default.conf
+      - ./reverse-proxy/ports.conf:/ports.conf
+      - ./certificates/rootCA.pem:/etc/ssl/certs/rootCA.pem
+      - ./certificates/cert.pem:/etc/ssl/certs/cert.pem
+      - ./certificates/key.pem:/etc/ssl/private/key.pem
+    entrypoint: ["/bin/bash", "/entrypoint.sh"]
+    depends_on:
+      - api_gateway
