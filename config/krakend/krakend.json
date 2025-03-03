@@ -43,13 +43,25 @@
       "method": "GET",
       "output_encoding": "no-op",
       "extra_config": {
-        "github.com/devopsfaith/krakend-mtls": {
-          "enable_mtls": true,
-          "public_key": "/etc/krakend/certificates/cert.pem",
-          "private_key": "/etc/krakend/certificates/key.pem",
-          "ca_certs": ["/etc/krakend/certificates/rootCA.pem"]
+        "github.com/devopsfaith/krakend-martian": {
+          "header.Modifier": {
+            "scope": ["request"],
+            "name": "X-Client-Cert",
+            "value": "",
+            "op": "notempty",
+            "error": {
+              "status_code": 401,
+              "message": "Unauthorized"
+            }
+          }
         }
       },
+      "input_headers": [
+        "X-Client-Cert",
+        "X-Client-Verify",
+        "X-Client-Subject",
+        "X-Client-Issuer"
+      ],
       "backend": [
         {
           "url_pattern": "/movies/upcoming.json",
