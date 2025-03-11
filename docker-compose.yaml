@@ -30,9 +30,9 @@ services:
       - ./reverse-proxy/entrypoint.sh:/entrypoint.sh
       - ./reverse-proxy/000-default.conf:/000-default.conf
       - ./reverse-proxy/ports.conf:/ports.conf
-      - ./certificates/rootCA.pem:/etc/ssl/certs/rootCA.pem
-      - ./certificates/cert.pem:/etc/ssl/certs/cert.pem
-      - ./certificates/key.pem:/etc/ssl/private/key.pem
+      - ./certificates/certs/ca/ca_crt.pem:/etc/ssl/certs/rootCA.pem
+      - ./certificates/certs/server/server_crt.pem:/etc/ssl/certs/cert.pem
+      - ./certificates/certs/server/server_key.pem:/etc/ssl/private/key.pem
     entrypoint: ["/bin/bash", "/entrypoint.sh"]
     depends_on:
       - api_gateway

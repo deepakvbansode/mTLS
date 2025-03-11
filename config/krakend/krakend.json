@@ -69,6 +69,30 @@
           "host": ["http://fake_api"]
         }
       ]
+    },
+    {
+      "endpoint": "/v1/client-health",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/agent/127.0.0.1:8080/v1/health",
+          "method": "GET",
+          "host": ["http://reverse_proxy"]
+        }
+      ]
+    },
+    {
+      "endpoint": "/v1/client-health-d",
+      "method": "GET",
+      "output_encoding": "no-op",
+      "backend": [
+        {
+          "url_pattern": "/v1/health",
+          "method": "GET",
+          "host": ["https://localhost:8080"]
+        }
+      ]
     }
   ]
 }
